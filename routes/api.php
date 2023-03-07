@@ -43,7 +43,7 @@ Route::middleware(['auth:sanctum','isAdmin'])->group(function () {
     Route::post('add_product', [ProductController::class, 'store']);
     Route::get('view_product', [ProductController::class, 'index']);
     Route::get('edit_product/{id}', [ProductController::class, 'edit']);
-    Route::post('update_product/{id}', [ProductController::class, 'update']);
+    Route::put('update_product/{id}', [ProductController::class, 'update']);
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
