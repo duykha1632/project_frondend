@@ -24,7 +24,7 @@ class CartController extends Controller
                 {
                     return response()->json([
                         'status' => 409,
-                        'message' =>$productCheck->name. 'Already Added to Cart',
+                        'message' =>$productCheck->name. ' Already Added to Cart',
                     ]);
                 }
                 else
@@ -36,7 +36,7 @@ class CartController extends Controller
                     $cartitem->save();
                     return response()->json([
                         'status' => 201,
-                        'message' => 'Added to Cart',
+                        'message' => ' Added to Cart',
                     ]);
                 }
 
@@ -45,7 +45,7 @@ class CartController extends Controller
             else{
                 return response()->json([
                     'status' => 404,
-                    'message' => 'Product not found',
+                    'message' => ' Product not found',
                 ]);
             }
             
@@ -55,9 +55,90 @@ class CartController extends Controller
         {
             return response()->json([
                 'status' => 401,
-                'message' => 'Login to Add to Cart',
+                'message' => ' Login to Add to Cart',
             ]);
         }
         
     }
+
+    public function viewcart()
+    {
+        if(auth('sanctum')->check())
+        {
+            $user_id= auth('sanctum')->user()->id;
+            $cartitems = Cart::where('user_id', $user_id)->get(); 
+            return response()->json([
+                'status' => 200,
+                'cart' => $cartitems,
+            ]);
+        }
+        else
+        {
+            return response()->json([
+                'status' => 401,
+                'message' => ' Login to View Cart data',
+            ]);
+        }
+    }
+
+    public function updatequantity($cart_id, $scope)
+    {
+        if(auth('sanctum')->check())
+        {
+            $user_id= auth('sanctum')->user()->id;
+            $cartitem = Cart::where('id',$cart_id)->where('user_id',$user_id)->first();
+            if($scope == "inc"){
+                $cartitem->product_quantity += 1;
+            }else if($scope == "dec"){
+                $cartitem->product_quantity -= 1;
+            }
+            $cartitem -> update();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Quantity Updated',
+            ]);
+
+        }
+            
+        else
+        {
+            return response()->json([
+                'status' => 401,
+                'message' => ' Login to continue',
+            ]);
+        }
+    }
+
+    public function deleteCartitem($cart_id)
+    {
+        if(auth('sanctum')->check())
+        {
+            $user_id= auth('sanctum')->user()->id;
+            $cartitem = Cart::where('id',$cart_id)->where('user_id',$user_id)->first();
+            if($cartitem)
+            {
+                $cartitem->delete();
+                return response()->json([
+                    'status' => 200,
+                    'message' => ' Cart Item Removed Success',
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'status' => 404,
+                    'message' => ' Cart Item not Found',
+                ]);
+            }
+        }
+            
+        else
+        {
+            return response()->json([
+                'status' => 401,
+                'message' => ' Login to continue',
+            ]);
+        }
+    }
+
 }
