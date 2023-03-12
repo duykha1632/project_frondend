@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\CheckoutController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\FrontendController;
 
@@ -21,6 +23,10 @@ Route::post('add-to-cart', [CartController::class, 'addtocart']);
 Route::get('cart', [CartController::class, 'viewcart']);
 Route::put('cart-updatequantity/{cart_id}/{scope}',[CartController::class, 'updatequantity']);
 Route::delete('delete-cartitem/{cart_id}',[CartController::class, 'deleteCartitem']);
+Route::post('validate-order',[CheckoutController::class, 'validateOrder']);
+
+Route::post('place-order', [CheckoutController::class, 'placeorder']);
+
 
 
 Route::middleware(['auth:sanctum','isAdmin'])->group(function () {
@@ -38,7 +44,8 @@ Route::middleware(['auth:sanctum','isAdmin'])->group(function () {
     Route::get('all_category', [CategoryController::class, 'getAll']);
     Route::get('garbage_category',[CategoryController::class, 'garbageView']);
 
-
+    // Orders
+    Route::get('admin/orders', [OrderController::class, 'index']);
     
 
 
